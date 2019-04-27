@@ -28,7 +28,6 @@ namespace GoogleARCore.Examples.CloudAnchors
     /// </summary>
 #pragma warning disable 618
     public class LocalPlayerController : NetworkBehaviour
-#pragma warning restore 618
     {
         /// <summary>
         /// The Star model that will represent networked objects in the scene.
@@ -68,9 +67,7 @@ namespace GoogleARCore.Examples.CloudAnchors
 
             // Host can spawn directly without using a Command because the server is running in this
             // instance.
-#pragma warning disable 618
             NetworkServer.Spawn(anchorObject);
-#pragma warning restore 618
         }
 
         /// <summary>
@@ -78,18 +75,39 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// </summary>
         /// <param name="position">Position of the object to be instantiated.</param>
         /// <param name="rotation">Rotation of the object to be instantiated.</param>
-#pragma warning disable 618
         [Command]
-#pragma warning restore 618
         public void CmdSpawnStar(Vector3 position, Quaternion rotation)
         {
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position, rotation);
+            starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
 
             // Spawn the object in all clients.
-#pragma warning disable 618
             NetworkServer.Spawn(starObject);
-#pragma warning restore 618
+        }
+
+        [Command]
+        public void CmdCollectStar(NetworkInstanceId objectNetId)
+        {
+            Debug.Log("Collect star");
+            var gameObject = NetworkServer.FindLocalObject(objectNetId);
+            if (gameObject == null)
+            {
+                Debug.LogError("Could not find GameObject from netId: " + objectNetId);
+                return;
+            }
+
+            var interactable = gameObject.GetComponent<Interactable>();
+            if (interactable.GetOwnerNetId() == netId)
+            {
+                Debug.Log("Cannot collect your star");
+                return;
+            }
+
+            // todo: collect
+            NetworkServer.Destroy(gameObject);
+
         }
     }
+#pragma warning restore 618
 }
