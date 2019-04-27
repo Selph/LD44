@@ -53,8 +53,8 @@
 			fixed4 frag(Varyings i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = tex2D(_MainTex, i.texcoord) + _TintColor;
-				col.a *= 1.0 - pow(clamp(i.distance, 0.0, _TransparencyDistance) / _TransparencyDistance, 2);
+				fixed4 col = tex2D(_MainTex, i.texcoord) * float4(_TintColor.rgb, 1);
+				col.a *= (1.0 - pow(clamp(i.distance, 0.0, _TransparencyDistance) / _TransparencyDistance, 2));
 				return col;
 			}
 			ENDCG
