@@ -97,6 +97,8 @@ namespace GoogleARCore.Examples.Common
 
             m_MeshRenderer.enabled = true;
 
+            //m_MeshRenderer.material.SetFloat("_UvRotation", Time.time * .03f);
+
             _UpdateMeshIfNeeded();
         }
 
