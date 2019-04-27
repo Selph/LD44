@@ -13,7 +13,7 @@
         Tags { "Queue"="Transparent" "RenderType"="Transparent" }
         Blend SrcAlpha OneMinusSrcAlpha
         ZTest on
-        //ZWrite off
+        ZWrite off
 
         Pass
         {
@@ -71,7 +71,8 @@
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
 				//return fixed4(_GridColor.rgb, col.r * i.color.a);
-				return fixed4(col);
+				return fixed4(col.rgb, col.a * i.color.a);
+				//return fixed4(col);
             }
             ENDCG
         }

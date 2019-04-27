@@ -23,6 +23,7 @@ namespace GoogleARCore.Examples.Common
     using System.Collections.Generic;
     using GoogleARCore;
     using UnityEngine;
+    using System.Linq;
 
     /// <summary>
     /// Visualizes a single DetectedPlane in the Unity scene.
@@ -61,7 +62,7 @@ namespace GoogleARCore.Examples.Common
 
         private List<int> m_MeshIndices = new List<int>();
 
-        private Mesh m_Mesh;
+        private Mesh[] m_Meshes;
 
         private MeshRenderer m_MeshRenderer;
 
@@ -70,7 +71,7 @@ namespace GoogleARCore.Examples.Common
         /// </summary>
         public void Awake()
         {
-            m_Mesh = GetComponent<MeshFilter>().mesh;
+            m_Meshes = GetComponentsInChildren<MeshFilter>().Select(mf => mf.mesh).ToArray();
             m_MeshRenderer = GetComponent<UnityEngine.MeshRenderer>();
         }
 
@@ -204,10 +205,13 @@ namespace GoogleARCore.Examples.Common
                 m_MeshIndices.Add(innerVertex2);
             }
 
-            m_Mesh.Clear();
-            m_Mesh.SetVertices(m_MeshVertices);
-            m_Mesh.SetTriangles(m_MeshIndices, 0);
-            m_Mesh.SetColors(m_MeshColors);
+            foreach (var m in m_Meshes)
+            {
+                m.Clear();
+                m.SetVertices(m_MeshVertices);
+                m.SetTriangles(m_MeshIndices, 0);
+                m.SetColors(m_MeshColors);
+            }
         }
 
         private bool _AreVerticesListsEqual(List<Vector3> firstList, List<Vector3> secondList)
