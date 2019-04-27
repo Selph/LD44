@@ -1,0 +1,17 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+
+public class Interactable : NetworkBehaviour
+{
+    public float Radius = 10.0f;
+
+    [SyncVar]
+    int playerId = 0;
+
+    void Start()
+    {
+
+    }
+}

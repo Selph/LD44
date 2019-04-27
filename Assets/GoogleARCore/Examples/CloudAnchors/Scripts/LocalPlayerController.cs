@@ -91,5 +91,6 @@ namespace GoogleARCore.Examples.CloudAnchors
             NetworkServer.Spawn(starObject);
 #pragma warning restore 618
         }
+        
     }
 }

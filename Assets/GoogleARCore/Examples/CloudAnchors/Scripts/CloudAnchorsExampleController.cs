@@ -203,7 +203,14 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // subsequent touch will instantiate a star, both in Hosting and Resolving modes.
                 if (_CanPlaceStars())
                 {
-                    _InstantiateStar();
+                    if (_TrySelectStart())
+                    {
+
+                    }
+                    else
+                    {
+                        _InstantiateStar();
+                    }
                 }
                 else if (!m_IsOriginPlaced && m_CurrentMode == ApplicationMode.Hosting)
                 {
@@ -342,6 +349,56 @@ namespace GoogleARCore.Examples.CloudAnchors
             // Star must be spawned in the server so a networking Command is used.
             GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>()
                 .CmdSpawnStar(m_LastHitPose.Value.position, m_LastHitPose.Value.rotation);
+        }
+
+        private bool _TrySelectStart()
+        {
+            Camera camera = Camera.main;
+            if (camera == null)
+            {
+                Debug.LogError("No camera");
+                return false;
+            }
+
+            if (m_LastHitPose == null)
+            {
+                Debug.LogError("No last hit pose");
+                return false;
+            }
+
+            Vector3 origin = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, camera.nearClipPlane));
+            Debug.DrawLine(origin, m_LastHitPose.Value.position, Color.red, 10.0f);
+            var objects = FindObjectsOfType<Interactable>();
+            foreach(var obj in objects)
+            {
+                Vector3 projection = FindNearestPointOnLine(origin, m_LastHitPose.Value.position, obj.transform.position);
+                float distance = Vector3.Distance(m_LastHitPose.Value.position, projection);
+
+                Debug.DrawLine(projection, m_LastHitPose.Value.position, Color.blue, 10.0f);
+
+                var interactable = obj.GetComponent<Interactable>();
+                if (distance < interactable.Radius)
+                {
+                    Debug.Log("Found with distance: " + distance);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Vector3 FindNearestPointOnLine(Vector3 origin, Vector3 end, Vector3 point)
+        {
+            //Get heading
+            Vector3 heading = (end - origin);
+            float magnitudeMax = heading.magnitude;
+            heading.Normalize();
+
+            //Do projection from the point but clamp it
+            Vector3 lhs = point - origin;
+            float dotP = Vector3.Dot(lhs, heading);
+            dotP = Mathf.Clamp(dotP, 0f, magnitudeMax);
+            return origin + heading * dotP;
         }
 
         /// <summary>
