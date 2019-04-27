@@ -277,6 +277,13 @@ namespace GoogleARCoreInternal
             {
                 yield return k_WaitForEndOfFrame;
 
+#if UNITY_EDITOR
+                if(EditorApplication.isPaused)
+                {
+                    continue;
+                }
+#endif
+
                 var curFrameLandscape = Screen.width > Screen.height;
                 if (prevFrameLandscape != curFrameLandscape)
                 {
