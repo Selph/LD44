@@ -21,7 +21,6 @@
 namespace GoogleARCore.Examples.Common
 {
     using System.Collections.Generic;
-    using System.Linq;
     using GoogleARCore;
     using UnityEngine;
 
@@ -91,8 +90,8 @@ namespace GoogleARCore.Examples.Common
             }
             else if (m_DetectedPlane.TrackingState != TrackingState.Tracking)
             {
-                 m_MeshRenderer.enabled = false;
-                 return;
+                m_MeshRenderer.enabled = false;
+                return;
             }
 
             m_MeshRenderer.enabled = true;
@@ -133,7 +132,7 @@ namespace GoogleARCore.Examples.Common
 
             Vector3 planeNormal = m_DetectedPlane.CenterPose.rotation * Vector3.up;
 
-            //m_MeshRenderer.material.SetVector("_PlaneNormal", planeNormal);
+            m_MeshRenderer.material.SetVector("_PlaneNormal", planeNormal);
 
             int planePolygonCount = m_MeshVertices.Count;
 
@@ -152,21 +151,62 @@ namespace GoogleARCore.Examples.Common
             // Fill transparent color to vertices 0 to 3.
             for (int i = 0; i < planePolygonCount; ++i)
             {
+                m_MeshColors.Add(Color.clear);
+            }
+
+            // Feather distance 0.2 meters.
+            const float featherLength = 0.2f;
+
+            // Feather scale over the distance between plane center and vertices.
+            const float featherScale = 0.2f;
+
+            // Add vertex 4 to 7.
+            for (int i = 0; i < planePolygonCount; ++i)
+            {
+                Vector3 v = m_MeshVertices[i];
+
+                // Vector from plane center to current point
+                Vector3 d = v - m_PlaneCenter;
+
+                float scale = 1.0f - Mathf.Min(featherLength / d.magnitude, featherScale);
+                m_MeshVertices.Add((scale * d) + m_PlaneCenter);
+
                 m_MeshColors.Add(Color.white);
             }
 
-            var t = new TriangleNet.Meshing.Algorithm.Dwyer();
+            m_MeshIndices.Clear();
+            int firstOuterVertex = 0;
+            int firstInnerVertex = planePolygonCount;
 
-            var mesh = t.Triangulate(m_MeshVertices.Select(v => new TriangleNet.Geometry.Vertex(v.x, v.z)).ToList(), new TriangleNet.Configuration());
+            // Generate triangle (4, 5, 6) and (4, 6, 7).
+            for (int i = 0; i < planePolygonCount - 2; ++i)
+            {
+                m_MeshIndices.Add(firstInnerVertex);
+                m_MeshIndices.Add(firstInnerVertex + i + 1);
+                m_MeshIndices.Add(firstInnerVertex + i + 2);
+            }
 
-            var x = mesh.Triangles.SelectMany(u => u.vertices).Select(a => a.id).ToList();
-            var xx = x.ToList();
-            xx.Reverse();
-            x.AddRange(xx);
+            // Generate triangle (0, 1, 4), (4, 1, 5), (5, 1, 2), (5, 2, 6), (6, 2, 3), (6, 3, 7)
+            // (7, 3, 0), (7, 0, 4)
+            for (int i = 0; i < planePolygonCount; ++i)
+            {
+                int outerVertex1 = firstOuterVertex + i;
+                int outerVertex2 = firstOuterVertex + ((i + 1) % planePolygonCount);
+                int innerVertex1 = firstInnerVertex + i;
+                int innerVertex2 = firstInnerVertex + ((i + 1) % planePolygonCount);
+
+                m_MeshIndices.Add(outerVertex1);
+                m_MeshIndices.Add(outerVertex2);
+                m_MeshIndices.Add(innerVertex1);
+
+                m_MeshIndices.Add(innerVertex1);
+                m_MeshIndices.Add(outerVertex2);
+                m_MeshIndices.Add(innerVertex2);
+            }
 
             m_Mesh.Clear();
             m_Mesh.SetVertices(m_MeshVertices);
-            m_Mesh.SetTriangles(x, 0);
+            m_Mesh.SetTriangles(m_MeshIndices, 0);
             m_Mesh.SetColors(m_MeshColors);
         }
 
