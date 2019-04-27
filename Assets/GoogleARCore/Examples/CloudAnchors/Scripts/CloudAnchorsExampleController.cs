@@ -330,6 +330,11 @@ namespace GoogleARCore.Examples.CloudAnchors
             UIController.OnAnchorResolved(success, response);
         }
 
+        private LocalPlayerController GetLocalPlayerController()
+        {
+            return GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>();
+        }
+
         /// <summary>
         /// Instantiates the anchor object at the pose of the m_LastPlacedAnchor Anchor. This will
         /// host the Cloud Anchor.
@@ -337,8 +342,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         private void _InstantiateAnchor()
         {
             // The anchor will be spawned by the host, so no networking Command is needed.
-            GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>()
-                .SpawnAnchor(Vector3.zero, Quaternion.identity, m_WorldOriginAnchor);
+            GetLocalPlayerController().SpawnAnchor(Vector3.zero, Quaternion.identity, m_WorldOriginAnchor);
         }
 
         /// <summary>
@@ -347,8 +351,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         private void _InstantiateStar()
         {
             // Star must be spawned in the server so a networking Command is used.
-            GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>()
-                .CmdSpawnStar(m_LastHitPose.Value.position, m_LastHitPose.Value.rotation);
+            GetLocalPlayerController().CmdSpawnStar(m_LastHitPose.Value.position, m_LastHitPose.Value.rotation);
         }
 
         private bool _TrySelectStart()
@@ -381,6 +384,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 if (distance < interactable.Radius)
                 {
                     Debug.Log("Found with distance: " + distance);
+                    GetLocalPlayerController().CmdCollectStar(obj.netId);
                     return true;
                 }
             }
