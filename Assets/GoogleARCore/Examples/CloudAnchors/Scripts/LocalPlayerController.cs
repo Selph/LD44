@@ -94,15 +94,19 @@ namespace GoogleARCore.Examples.CloudAnchors
             if (gameObject == null)
             {
                 Debug.LogError("Could not find GameObject from netId: " + objectNetId);
+                return;
             }
 
             var interactable = gameObject.GetComponent<Interactable>();
             if (interactable.GetOwnerNetId() == netId)
             {
                 Debug.Log("Cannot collect your star");
+                return;
             }
 
             // todo: collect
+            NetworkServer.Destroy(gameObject);
+
         }
     }
 #pragma warning restore 618
