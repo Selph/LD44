@@ -23,7 +23,7 @@ public class Interactable : MonoBehaviour
 
     void FixedUpdate()
     {
-        gameObject.transform.Rotate(0.0f, Time.deltaTime * 360.0f, 0.0f, Space.Self);
+        gameObject.transform.Rotate(0.0f, Time.deltaTime * 100.0f, 0.0f, Space.Self);
     }
 }
 #pragma warning restore 618

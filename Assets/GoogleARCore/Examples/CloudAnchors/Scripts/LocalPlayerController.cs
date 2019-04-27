@@ -78,6 +78,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         [Command]
         public void CmdSpawnStar(Vector3 position, Quaternion rotation)
         {
+            Debug.Log("Server: CmdSpawnStar");
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position + Vector3.up * 0.1f, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
@@ -89,7 +90,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         [Command]
         public void CmdCollectStar(NetworkInstanceId objectNetId)
         {
-            Debug.Log("Collect star");
+            Debug.Log("Server: CmdCollectStar");
             var gameObject = NetworkServer.FindLocalObject(objectNetId);
             if (gameObject == null)
             {
