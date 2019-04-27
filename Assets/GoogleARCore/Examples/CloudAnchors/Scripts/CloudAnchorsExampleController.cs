@@ -367,7 +367,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             }
 
             Vector3 cameraLocation = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, camera.nearClipPlane));
-            Debug.DrawLine(cameraLocation, m_LastHitPose.Value.position, Color.red, 10.0f);
+            //Debug.DrawLine(cameraLocation, m_LastHitPose.Value.position, Color.red, 10.0f);
 
             var objects = FindObjectsOfType<Interactable>();
             foreach(var obj in objects)
@@ -375,7 +375,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 Vector3 projection = FindNearestPointOnLine(cameraLocation, m_LastHitPose.Value.position, obj.transform.position);
                 float distance = Vector3.Distance(obj.transform.position, projection);
 
-                Debug.DrawLine(projection, obj.transform.position, Color.blue, 10.0f);
+                //Debug.DrawLine(projection, obj.transform.position, Color.blue, 10.0f);
 
                 var interactable = obj.GetComponent<Interactable>();
                 if (distance < interactable.Radius)
