@@ -79,7 +79,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         public void CmdSpawnStar(Vector3 position, Quaternion rotation)
         {
             // Instantiate Star model at the hit pose.
-            var starObject = Instantiate(StarPrefab, position, rotation);
+            var starObject = Instantiate(StarPrefab, position + Vector3.up * 0.1f, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
 
             // Spawn the object in all clients.

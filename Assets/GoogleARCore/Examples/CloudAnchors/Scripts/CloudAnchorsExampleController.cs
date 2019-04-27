@@ -116,6 +116,9 @@ namespace GoogleARCore.Examples.CloudAnchors
 
         private bool m_MatchStarted = false;
 
+        private float m_NextInputReadTime = 0.0f;
+        private float m_InputReadFrequency = 0.5f;
+
         /// <summary>
         /// Enumerates modes the example application can be in.
         /// </summary>
@@ -209,11 +212,14 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // subsequent touch will instantiate a star, both in Hosting and Resolving modes.
                 if (_CanPlaceStars(m_LastHitPose.Value))
                 {
-                    if (_TrySelectStart())
+                    Debug.Log("Time: " + Time.time + ", next: " + m_NextInputReadTime);
+                    if (m_NextInputReadTime > Time.time)
                     {
-
+                        return;
                     }
-                    else
+                    m_NextInputReadTime = Time.time + m_InputReadFrequency;
+
+                    if (!_TrySelectStart())
                     {
                         _InstantiateStar();
                     }
@@ -356,6 +362,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// </summary>
         private void _InstantiateStar()
         {
+            Debug.Log("_InstantiateStar");
             // Star must be spawned in the server so a networking Command is used.
             GetLocalPlayerController().CmdSpawnStar(m_LastHitPose.Value.position, m_LastHitPose.Value.rotation);
         }
@@ -387,10 +394,11 @@ namespace GoogleARCore.Examples.CloudAnchors
                 //Debug.DrawLine(projection, obj.transform.position, Color.blue, 10.0f);
 
                 var interactable = obj.GetComponent<Interactable>();
+                var netIdentity = obj.GetComponent<NetworkIdentity>();
                 if (distance < interactable.Radius)
                 {
                     Debug.Log("Found with distance: " + distance);
-                    GetLocalPlayerController().CmdCollectStar(obj.netId);
+                    GetLocalPlayerController().CmdCollectStar(netIdentity.netId);
                     return true;
                 }
             }

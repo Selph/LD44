@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 #pragma warning disable 618
-public class Interactable : NetworkBehaviour
+public class Interactable : MonoBehaviour
 {
     public float Radius = 3.0f;
 
-    [SyncVar]
+    //[SyncVar]
     private NetworkInstanceId _ownerNetId;
 
     public NetworkInstanceId GetOwnerNetId()
