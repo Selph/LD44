@@ -85,12 +85,20 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position, rotation);
+            //starObject.name
 
             // Spawn the object in all clients.
 #pragma warning disable 618
             NetworkServer.Spawn(starObject);
 #pragma warning restore 618
         }
-        
+
+#pragma warning disable 618
+        [Command]
+#pragma warning restore 618
+        public void CmdCollectStar(Vector3 position, Quaternion rotation)
+        {
+            Debug.Log("Collect star");
+        }
     }
 }
