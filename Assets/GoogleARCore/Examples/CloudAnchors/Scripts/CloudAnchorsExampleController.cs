@@ -219,7 +219,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                     }
                     m_NextInputReadTime = Time.time + m_InputReadFrequency;
 
-                    if (!_TrySelectStart())
+                    //if (!_TrySelectStart())
                     {
                         _InstantiateStar();
                     }
@@ -443,7 +443,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// <returns><c>true</c>, if stars can be placed, <c>false</c> otherwise.</returns>
         private bool _CanPlaceStars(Pose lastHitPose)
         {
-            if (m_IsOriginPlaced && Vector3.Distance(lastHitPose.position, m_WorldOriginAnchor.transform.position) > maxDistanceFromAnchor)
+            if (m_WorldOriginAnchor && m_IsOriginPlaced && Vector3.Distance(lastHitPose.position, m_WorldOriginAnchor.transform.position) > maxDistanceFromAnchor)
             {
                 return false;
             }
