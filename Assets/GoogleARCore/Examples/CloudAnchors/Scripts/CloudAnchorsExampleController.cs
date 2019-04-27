@@ -368,6 +368,7 @@ namespace GoogleARCore.Examples.CloudAnchors
 
             Vector3 origin = camera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, camera.nearClipPlane));
             Debug.DrawLine(origin, m_LastHitPose.Value.position, Color.red, 10.0f);
+
             var objects = FindObjectsOfType<Interactable>();
             foreach(var obj in objects)
             {
