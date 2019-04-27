@@ -64,11 +64,13 @@ namespace GoogleARCore.Examples.CloudAnchors
             m_CloudAnchorsExampleController =
                 GameObject.Find("CloudAnchorsExampleController")
                     .GetComponent<CloudAnchorsExampleController>();
-
+            
             var anchorLimit = Instantiate(m_CloudAnchorsExampleController.limitPrefab);
             anchorLimit.transform.localScale *= m_CloudAnchorsExampleController.maxDistanceFromAnchor;
             anchorLimit.transform.parent = transform;
             anchorLimit.transform.localPosition = Vector3.zero + (Vector3.up * m_CloudAnchorsExampleController.maxDistanceFromAnchor / 2);
+
+            m_CloudAnchorsExampleController.m_AnchorCollider = anchorLimit.GetComponent<CapsuleCollider>();
         }
 
         /// <summary>

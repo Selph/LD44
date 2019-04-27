@@ -524,6 +524,7 @@ MonoBehaviour:
   ARCoreWorldOriginHelper: {fileID: 635649539}
   ARKitRoot: {fileID: 1943188169}
   ARKitFirstPersonCamera: {fileID: 1443761023}
+  m_AnchorCollider: {fileID: 0}
 --- !u!4 &265054091
 Transform:
   m_ObjectHideFlags: 0

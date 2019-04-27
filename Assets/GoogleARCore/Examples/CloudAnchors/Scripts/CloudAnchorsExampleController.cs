@@ -21,6 +21,7 @@
 namespace GoogleARCore.Examples.CloudAnchors
 {
     using GoogleARCore;
+    using System;
     using UnityEngine;
     using UnityEngine.Networking;
 
@@ -96,6 +97,8 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// The anchor component that defines the shared world origin.
         /// </summary>
         private Component m_WorldOriginAnchor = null;
+        [NonSerialized]
+        public Collider m_AnchorCollider;
 
         /// <summary>
         /// The last pose of the hit point from AR hit test.
@@ -437,13 +440,25 @@ namespace GoogleARCore.Examples.CloudAnchors
             }
         }
 
+        bool IsWithin(Collider c, Vector3 point)
+        {
+            Vector3 closest = c.ClosestPoint(point);
+            Vector3 origin = c.bounds.center; //.transform.position + (c.transform.rotation * c.bounds.center);
+            Vector3 originToContact = closest - origin;
+            Vector3 pointToContact = closest - point;
+
+            // Here we make the magic, originToContact points from the center to the closest point. So if the angle between it and the pointToContact is less than 90, pointToContact is also looking from the inside-out.
+            // The angle will probably be 180 or 0, but it's bad to compare exact floats and the rigidbody centerOfMass calculation could add some potential wiggle to the angle, so we use "< 90" to account for any of that.
+            return (Vector3.Angle(originToContact, pointToContact) < 90);
+        }
+
         /// <summary>
         /// Indicates whether a star can be placed.
         /// </summary>
         /// <returns><c>true</c>, if stars can be placed, <c>false</c> otherwise.</returns>
         private bool _CanPlaceStars(Pose lastHitPose)
         {
-            if (m_IsOriginPlaced && Vector3.Distance(lastHitPose.position, m_WorldOriginAnchor.transform.position) > maxDistanceFromAnchor)
+            if (m_IsOriginPlaced && m_AnchorCollider && !IsWithin(m_AnchorCollider, lastHitPose.position))
             {
                 return false;
             }
