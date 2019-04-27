@@ -29,6 +29,12 @@ namespace GoogleARCore.Examples.CloudAnchors
     /// </summary>
     public class CloudAnchorsExampleController : MonoBehaviour
     {
+        [Header("GAME JAM")]
+
+        public float maxDistanceFromAnchor = 4;
+        public GameObject limitPrefab;
+
+
         [Header("ARCore")]
 
         /// <summary>
@@ -201,7 +207,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             {
                 // The first touch on the Hosting mode will instantiate the origin anchor. Any
                 // subsequent touch will instantiate a star, both in Hosting and Resolving modes.
-                if (_CanPlaceStars())
+                if (_CanPlaceStars(m_LastHitPose.Value))
                 {
                     _InstantiateStar();
                 }
@@ -365,8 +371,13 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// Indicates whether a star can be placed.
         /// </summary>
         /// <returns><c>true</c>, if stars can be placed, <c>false</c> otherwise.</returns>
-        private bool _CanPlaceStars()
+        private bool _CanPlaceStars(Pose lastHitPose)
         {
+            if (m_IsOriginPlaced && Vector3.Distance(lastHitPose.position, m_WorldOriginAnchor.transform.position) > maxDistanceFromAnchor)
+            {
+                return false;
+            }
+
             if (m_CurrentMode == ApplicationMode.Resolving)
             {
                 return m_IsOriginPlaced;

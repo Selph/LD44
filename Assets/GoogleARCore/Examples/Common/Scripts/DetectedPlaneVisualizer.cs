@@ -155,8 +155,6 @@ namespace GoogleARCore.Examples.Common
                 m_MeshColors.Add(Color.white);
             }
 
-            Debug.Log("plane");
-
             var t = new TriangleNet.Meshing.Algorithm.Dwyer();
 
             var mesh = t.Triangulate(m_MeshVertices.Select(v => new TriangleNet.Geometry.Vertex(v.x, v.z)).ToList(), new TriangleNet.Configuration());
