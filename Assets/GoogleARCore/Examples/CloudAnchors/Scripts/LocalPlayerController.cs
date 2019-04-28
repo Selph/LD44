@@ -82,11 +82,8 @@ namespace GoogleARCore.Examples.CloudAnchors
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
-            
-            // Update the material base on the player number
-            var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
-            Renderer renderer = arCoreMesh.GetComponent<Renderer>();
-            renderer.material = GetPlayerMaterial();
+
+            UpdateStarMaterial(starObject);
 
             // Spawn the object in all clients.
             NetworkServer.Spawn(starObject);
@@ -117,16 +114,17 @@ namespace GoogleARCore.Examples.CloudAnchors
             NetworkServer.Destroy(gameObject);
         }
 
-        private Material GetPlayerMaterial()
+        private void UpdateStarMaterial(GameObject starObject)
         {
-            Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
-
+            // Update the material of locally placed stars so we donèt mix them with others
             if (gameObject.name == "LocalPlayer")
             {
+                var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
+                Renderer renderer = arCoreMesh.GetComponent<Renderer>();
+                Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
                 material.color = Color.blue;
+                renderer.material = material;
             }
-
-            return material;
         }
     }
 #pragma warning restore 618
