@@ -382,6 +382,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         private void _OnAllStarsPlaced()
         {
             UIController.SnackbarText.text = "All bits placed. Waiting for other players to be done.";
+            Debug.Log("All local stars placed");
         }
 
         private void _OnHealthChanged(int health)

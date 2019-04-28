@@ -22,8 +22,10 @@ public class GameState : NetworkBehaviour
     public GameMode GetGameMode() { return _currentGameMode; }
     public void SetGameMode(GameMode mode)
     {
+        Debug.LogFormat("SetGameMode: {0}", mode);
         if (mode != _currentGameMode)
         {
+            Debug.Log("State is different, firing event!");
             _currentGameMode = mode;
             OnGameModeChanged(_currentGameMode);
         }
