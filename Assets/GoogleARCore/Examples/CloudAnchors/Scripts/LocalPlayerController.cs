@@ -130,6 +130,11 @@ namespace GoogleARCore.Examples.CloudAnchors
                 {
                     var healthComponent = playerController.GetComponent<HealthComponent>();
                     healthComponent.DecrementHealth();
+
+                    if (healthComponent.GetCurrentHealth() == 0)
+                    {
+                        _CheckIfOnlyOnePlayerLeft();
+                    }
                 }
                 else
                 {
@@ -185,6 +190,37 @@ namespace GoogleARCore.Examples.CloudAnchors
                 if (gameState)
                 {
                     gameState.SetGameMode(GameState.GameMode.Playing);
+                }
+                else
+                {
+                    Debug.LogError("Cannot find GameState");
+                }
+            }
+        }
+
+        private bool _IsOnlyOnePlayerLeftAlive()
+        {
+            int playerAliveCount = 0;
+            var playerControllers = FindObjectsOfType<LocalPlayerController>();
+            foreach (var playerController in playerControllers)
+            {
+                if (playerController.GetComponent<HealthComponent>().GetCurrentHealth() > 0)
+                {
+                    playerAliveCount++;
+                }
+            }
+
+            return playerAliveCount == 1;
+        }
+
+        private void _CheckIfOnlyOnePlayerLeft()
+        {
+            if (_IsOnlyOnePlayerLeftAlive())
+            {
+                var gameState = FindObjectOfType<GameState>();
+                if (gameState)
+                {
+                    gameState.SetGameMode(GameState.GameMode.PostGame);
                 }
                 else
                 {

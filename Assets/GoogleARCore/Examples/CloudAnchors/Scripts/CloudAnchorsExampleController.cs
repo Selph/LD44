@@ -401,6 +401,10 @@ namespace GoogleARCore.Examples.CloudAnchors
                 case GameState.GameMode.Playing:
                     UIController.SnackbarText.text = "Find bits of other players!";
                     break;
+                case GameState.GameMode.PostGame:
+                    if (heartsBar.current > 0)
+                        UIController.SnackbarText.text = "You WIN !!!";
+                    break;
             }
         }
 
