@@ -155,12 +155,12 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (isHost)
             {
-                SnackbarText.text = "Hosting Cloud Anchor...";
+                SnackbarText.text = "Planting Main Tree...";
             }
             else
             {
                 SnackbarText.text =
-                    "Cloud Anchor added to session! Attempting to resolve anchor...";
+                    "The World Creator planted the Main Tree! Attempting to locate it...";
             }
         }
 
@@ -174,11 +174,11 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (success)
             {
-                SnackbarText.text = "Cloud Anchor successfully hosted! Tap to place more stars.";
+                SnackbarText.text = "Main Tree succesfully planted! Tap to place hide your life bits.";
             }
             else
             {
-                SnackbarText.text = "Cloud Anchor could not be hosted. " + response;
+                SnackbarText.text = "Main Tree couldn't be planted. Reason: " + response;
             }
         }
 
@@ -192,12 +192,12 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (success)
             {
-                SnackbarText.text = "Cloud Anchor successfully resolved! Tap to place more stars.";
+                SnackbarText.text = "Main Tree succesfully located! Tap to place hide your life bits.";
             }
             else
             {
                 SnackbarText.text =
-                    "Cloud Anchor could not be resolved. Will attempt again. " + response;
+                    "Main Tree couldn't be located. Reason: " + response;
             }
         }
 
@@ -241,7 +241,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             m_Manager.OnMatchList(success, extendedInfo, matches);
             if (!success)
             {
-                SnackbarText.text = "Could not list matches: " + extendedInfo;
+                SnackbarText.text = "Could not list worlds. Reason: " + extendedInfo;
                 return;
             }
 
@@ -292,14 +292,14 @@ namespace GoogleARCore.Examples.CloudAnchors
             m_Manager.OnMatchCreate(success, extendedInfo, matchInfo);
             if (!success)
             {
-                SnackbarText.text = "Could not create match: " + extendedInfo;
+                SnackbarText.text = "Could not create world. Reason: " + extendedInfo;
                 return;
             }
 
             m_CurrentRoomNumber = _GetRoomNumberFromNetworkId(matchInfo.networkId);
             _ChangeLobbyUIVisibility(false);
-            SnackbarText.text = "Find a plane, tap to create a Cloud Anchor.";
-            CurrentRoomLabel.GetComponentInChildren<Text>().text = "Room: " + m_CurrentRoomNumber;
+            SnackbarText.text = "Find a floor, then tap to plant the the Main Tree.";
+            CurrentRoomLabel.GetComponentInChildren<Text>().text = "World " + m_CurrentRoomNumber;
         }
 
         /// <summary>
@@ -316,14 +316,14 @@ namespace GoogleARCore.Examples.CloudAnchors
             m_Manager.OnMatchJoined(success, extendedInfo, matchInfo);
             if (!success)
             {
-                SnackbarText.text = "Could not join to match: " + extendedInfo;
+                SnackbarText.text = "Could not join world. Reason: " + extendedInfo;
                 return;
             }
 
             m_CurrentRoomNumber = _GetRoomNumberFromNetworkId(matchInfo.networkId);
             _ChangeLobbyUIVisibility(false);
-            SnackbarText.text = "Waiting for Cloud Anchor to be hosted...";
-            CurrentRoomLabel.GetComponentInChildren<Text>().text = "Room: " + m_CurrentRoomNumber;
+            SnackbarText.text = "Waiting for World Creator to plant the Main Tree...";
+            CurrentRoomLabel.GetComponentInChildren<Text>().text = "World " + m_CurrentRoomNumber;
         }
 
         /// <summary>
