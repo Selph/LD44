@@ -35,6 +35,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         public float maxDistanceFromAnchor = 4;
         public GameObject limitPrefab;
 
+        public HeartsBar heartsBar;
 
         [Header("ARCore")]
 

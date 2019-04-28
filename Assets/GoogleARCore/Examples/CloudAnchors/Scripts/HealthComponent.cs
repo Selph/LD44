@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GoogleARCore.Examples.CloudAnchors;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,10 +10,23 @@ public class HealthComponent : NetworkBehaviour
     public int MaxHealth = 6;
 
     [SyncVar]
-    private int _currentHealth = 3;
+    private int _currentHealth = 6;
+    private CloudAnchorsExampleController m_CloudAnchorsExampleController;
 
     public int GetCurrentHealth() { return _currentHealth; }
-    public void IncrementHealth() { _currentHealth++; }
+    public void IncrementHealth() { _currentHealth++; m_CloudAnchorsExampleController.heartsBar.current = _currentHealth; }
+
+    private void Start()
+    {
+        m_CloudAnchorsExampleController =
+    GameObject.Find("CloudAnchorsExampleController")
+        .GetComponent<CloudAnchorsExampleController>();
+
+        _currentHealth = MaxHealth;
+
+        m_CloudAnchorsExampleController.heartsBar.total = MaxHealth;
+        m_CloudAnchorsExampleController.heartsBar.current = _currentHealth;
+    }
 }
 
 #pragma warning restore 618

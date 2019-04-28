@@ -330,6 +330,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             LobbyScreen.gameObject.SetActive(visible);
             CurrentRoomLabel.gameObject.SetActive(!visible);
+            CloudAnchorsExampleController.heartsBar.gameObject.SetActive(!visible);
             foreach (GameObject button in m_JoinRoomButtonsPool)
             {
                 bool active = visible && button.GetComponentInChildren<Text>().text != string.Empty;
