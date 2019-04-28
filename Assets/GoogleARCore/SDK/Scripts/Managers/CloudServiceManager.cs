@@ -87,10 +87,13 @@ namespace GoogleARCoreInternal.CrossPlatform
 
         public GoogleARCore.AsyncTask<CloudAnchorResult> ResolveCloudAnchor(String cloudAnchorId)
         {
+            Debug.LogFormat("CloudServiceManager.ResolveCloudAnchor({0})", cloudAnchorId);
+
             Action<CloudAnchorResult> onComplete;
             GoogleARCore.AsyncTask<CloudAnchorResult> task;
             if (!_CreateCloudAnchorResultAsyncTask(out onComplete, out task))
             {
+                Debug.Log("CloudServiceManager.ResolveCloudAnchor: _CreateCloudAnchorResultAsyncTask() failed");
                 return task;
             }
 
@@ -100,6 +103,7 @@ namespace GoogleARCoreInternal.CrossPlatform
 
             if (status != ApiArStatus.Success)
             {
+                Debug.LogFormat("CloudServiceManager.ResolveCloudAnchor: LifecycleManager.Instance.NativeSession.SessionApi.ResolveCloudAnchor failed with result code {0} (mapped to {1})", status.ToString(), status.ToCloudServiceResponse());
                 onComplete(new CloudAnchorResult()
                 {
                     Response = status.ToCloudServiceResponse(),
@@ -109,6 +113,7 @@ namespace GoogleARCoreInternal.CrossPlatform
                 return task;
             }
 
+            Debug.LogFormat("CloudServiceManager.ResolveCloudAnchor: returning normally");
             _CreateAndTrackCloudAnchorRequest(cloudAnchorHandle, onComplete);
             return task;
         }
@@ -131,6 +136,7 @@ namespace GoogleARCoreInternal.CrossPlatform
 
             if (LifecycleManager.Instance.NativeSession == null)
             {
+                Debug.Log("CloudServiceManager._CreateCloudAnchorResultAsyncTask: native session is null");
                 onComplete(new CloudAnchorResult()
                 {
                     Response = CloudServiceResponse.ErrorNotSupportedByConfiguration,

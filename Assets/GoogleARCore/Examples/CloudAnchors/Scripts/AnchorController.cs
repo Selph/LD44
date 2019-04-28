@@ -167,6 +167,8 @@ namespace GoogleARCore.Examples.CloudAnchors
 
             m_ShouldResolve = false;
 
+            Debug.LogFormat("Attempting to resolve cloud anchor with id {0}", cloudAnchorId);
+
             XPSession.ResolveCloudAnchor(cloudAnchorId).ThenAction(
                 (System.Action<CloudAnchorResult>)(result =>
                     {
