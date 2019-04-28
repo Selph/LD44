@@ -118,12 +118,11 @@ namespace GoogleARCore.Examples.CloudAnchors
                 }
 
                 var interactable = gameObject.GetComponent<Interactable>();
-                // Temp comment to test picking up our own stars
-//                 if (interactable.GetOwnerNetId() == netId)
-//                 {
-//                     Debug.Log("Cannot collect your star");
-//                     return;
-//                 }
+                if (interactable.GetOwnerNetId() == netId)
+                {
+                    Debug.Log("Cannot collect your star");
+                    return;
+                }
 
                 var playerController = NetworkServer.FindLocalObject(interactable.GetOwnerNetId());
                 if (playerController)
