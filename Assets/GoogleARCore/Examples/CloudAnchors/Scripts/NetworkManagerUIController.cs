@@ -169,7 +169,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (success)
             {
-                SnackbarText.text = "Main Tree succesfully planted! Tap to place hide your life bits.";
+                SnackbarText.text = "Main Tree succesfully planted! Tap to place and hide your life bits.";
             }
             else
             {
@@ -187,7 +187,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (success)
             {
-                SnackbarText.text = "Main Tree succesfully located! Tap to place hide your life bits.";
+                SnackbarText.text = "Main Tree succesfully located! Tap to place and hide your life bits.";
             }
             else
             {
