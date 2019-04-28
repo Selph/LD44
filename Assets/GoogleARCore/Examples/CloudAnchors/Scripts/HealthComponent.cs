@@ -29,7 +29,7 @@ public class HealthComponent : NetworkBehaviour
         int prev = _currentHealth;
         _currentHealth = Mathf.Min(MaxHealth, Mathf.Max(newHealth, 0));
 
-        if (prev != _currentHealth)
+        if (prev != _currentHealth && OnHealthChanged != null)
         {
             OnHealthChanged(_currentHealth);
         }
