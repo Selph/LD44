@@ -39,6 +39,10 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// </summary>
         public GameObject AnchorPrefab;
 
+        public int StarsToPlace = 6;
+        public delegate void AllStarsPlaced();
+        public event AllStarsPlaced OnAllStarsPlaced;
+
         /// <summary>
         /// The Unity OnStartLocalPlayer() method.
         /// </summary>
@@ -78,51 +82,118 @@ namespace GoogleARCore.Examples.CloudAnchors
         [Command]
         public void CmdSpawnStar(Vector3 position, Quaternion rotation)
         {
-            Debug.Log("Server: CmdSpawnStar");
-            // Instantiate Star model at the hit pose.
-            var starObject = Instantiate(StarPrefab, position, rotation);
-            starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
+            if (_IsInPlacementMode() && StarsToPlace > 0)
+            {
+                Debug.Log("Server: CmdSpawnStar");
+                // Instantiate Star model at the hit pose.
+                var starObject = Instantiate(StarPrefab, position, rotation);
+                starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
 
-            UpdateStarMaterial(starObject);
+                _UpdateStarMaterial(starObject);
 
-            // Spawn the object in all clients.
-            NetworkServer.Spawn(starObject);
+                // Spawn the object in all clients.
+                NetworkServer.Spawn(starObject);
+                StarsToPlace--;
+
+                if (StarsToPlace == 0)
+                {
+                    OnAllStarsPlaced();
+                }
+
+                _CheckIfAllStarsPlaced();
+            }
         }
 
         [Command]
         public void CmdCollectStar(NetworkInstanceId objectNetId)
         {
-            Debug.Log("Server: CmdCollectStar");
-            var gameObject = NetworkServer.FindLocalObject(objectNetId);
-            if (gameObject == null)
+            if (_IsInPlayingMode())
             {
-                Debug.LogError("Could not find GameObject from netId: " + objectNetId);
-                return;
-            }
+                Debug.Log("Server: CmdCollectStar");
+                var gameObject = NetworkServer.FindLocalObject(objectNetId);
+                if (gameObject == null)
+                {
+                    Debug.LogError("Could not find GameObject from netId: " + objectNetId);
+                    return;
+                }
 
-            // Temp comment to test picking up our own stars
-             var interactable = gameObject.GetComponent<Interactable>();
-//             if (interactable.GetOwnerNetId() == netId)
-//             {
-//                 Debug.Log("Cannot collect your star");
-//                 return;
-//             }
+                var interactable = gameObject.GetComponent<Interactable>();
+                // Temp comment to test picking up our own stars
+//                 if (interactable.GetOwnerNetId() == netId)
+//                 {
+//                     Debug.Log("Cannot collect your star");
+//                     return;
+//                 }
 
-            var playerController = NetworkServer.FindLocalObject(interactable.GetOwnerNetId());
-            if (playerController)
-            {
-                var healthComponent = playerController.GetComponent<HealthComponent>();
-                healthComponent.DecrementHealth();
+                var playerController = NetworkServer.FindLocalObject(interactable.GetOwnerNetId());
+                if (playerController)
+                {
+                    var healthComponent = playerController.GetComponent<HealthComponent>();
+                    healthComponent.DecrementHealth();
+                }
+                else
+                {
+                    Debug.LogError("No player controller found for interactable");
+                }
+
+                NetworkServer.Destroy(gameObject);
             }
             else
             {
-                Debug.LogError("No player controller found for interactable");
+                Debug.Log("Cannot collect stars while not in playing mode");
             }
-
-            NetworkServer.Destroy(gameObject);
         }
 
-        private void UpdateStarMaterial(GameObject starObject)
+        private bool _IsInPlacementMode()
+        {
+            var gameState = FindObjectOfType<GameState>();
+            if (gameState)
+            {
+                return gameState.GetGameMode() == GameState.GameMode.Placement;
+            }
+            return false;
+        }
+
+        private bool _IsInPlayingMode()
+        {
+            var gameState = FindObjectOfType<GameState>();
+            if (gameState)
+            {
+                return gameState.GetGameMode() == GameState.GameMode.Playing;
+            }
+            return false;
+        }
+
+        private bool _AreAllStarsPlaced()
+        {
+            var playerControllers = FindObjectsOfType<LocalPlayerController>();
+            foreach (var playerController in playerControllers)
+            {
+                if (playerController.StarsToPlace > 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void _CheckIfAllStarsPlaced()
+        {
+            if (_AreAllStarsPlaced())
+            {
+                var gameState = FindObjectOfType<GameState>();
+                if (gameState)
+                {
+                    gameState.SetGameMode(GameState.GameMode.Playing);
+                }
+                else
+                {
+                    Debug.LogError("Cannot find GameState");
+                }
+            }
+        }
+
+        private void _UpdateStarMaterial(GameObject starObject)
         {
             // Update the material of locally placed stars so we donèt mix them with others
             if (gameObject.name == "LocalPlayer")

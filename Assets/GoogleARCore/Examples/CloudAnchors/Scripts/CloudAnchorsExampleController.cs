@@ -122,7 +122,7 @@ namespace GoogleARCore.Examples.CloudAnchors
 
         private float m_NextInputReadTime = 0.0f;
         private float m_InputReadFrequency = 0.5f;
-        private bool m_IsHealthBound = false;
+        private bool m_AreEventsBound = false;
 
         /// <summary>
         /// Enumerates modes the example application can be in.
@@ -173,7 +173,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 return;
             }
             
-            _BindHeathChanges();
+            _BindEvents();
 
 #if UNITY_EDITOR
             if (!Input.GetMouseButton(0))
@@ -356,37 +356,58 @@ namespace GoogleARCore.Examples.CloudAnchors
             return localPlayer ? localPlayer.GetComponent<LocalPlayerController>() : null;
         }
         
-        private void _BindHeathChanges()
+        private void _BindEvents()
         {
-            if (!m_IsHealthBound)
+            if (!m_AreEventsBound)
             {
                 // Bind health changes
                 var localPlayerController = GetLocalPlayerController();
-                if (localPlayerController)
+                var gameState = FindObjectOfType<GameState>();
+                if (localPlayerController && gameState)
                 {
+                    localPlayerController.OnAllStarsPlaced += _OnAllStarsPlaced;
+
                     var healthComponent = localPlayerController.GetComponent<HealthComponent>();
                     healthComponent.OnHealthChanged += _OnHealthChanged;
                     heartsBar.total = healthComponent.MaxHealth;
                     heartsBar.current = healthComponent.GetCurrentHealth();
-                    m_IsHealthBound = true;
-                    Debug.Log("Health bound.");
+                    m_AreEventsBound = true;
+
+                    gameState.OnGameModeChanged += _OnGameModeChanged;
+                    Debug.Log("Events bound.");
                 }
-//                 else
-//                 {
-//                     Debug.LogError("No LocalPlayerController in CloudAnchorsExampleController::Start()");
-//                 }
             }
+        }
+
+        private void _OnAllStarsPlaced()
+        {
+            UIController.SnackbarText.text = "All bits placed. Waiting for other players to be done.";
         }
 
         private void _OnHealthChanged(int health)
         {
             heartsBar.current = health;
+
+            if (health == 0)
+            {
+                UIController.SnackbarText.text = "You lost! All your bits were found.";
+            }
         }
 
-/// <summary>
-/// Instantiates the anchor object at the pose of the m_LastPlacedAnchor Anchor. This will
-/// host the Cloud Anchor.
-/// </summary>
+        private void _OnGameModeChanged(GameState.GameMode mode)
+        {
+            switch (mode)
+            {
+                case GameState.GameMode.Playing:
+                    UIController.SnackbarText.text = "Find bits of other players!";
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Instantiates the anchor object at the pose of the m_LastPlacedAnchor Anchor. This will
+        /// host the Cloud Anchor.
+        /// </summary>
         private void _InstantiateAnchor()
         {
             // The anchor will be spawned by the host, so no networking Command is needed.
