@@ -82,6 +82,12 @@ namespace GoogleARCore.Examples.CloudAnchors
             Session.GetTrackables<DetectedPlane>(m_NewPlanes, TrackableQueryFilter.New);
             for (int i = 0; i < m_NewPlanes.Count; i++)
             {
+                Vector3 planeNormal = m_NewPlanes[i].CenterPose.rotation * Vector3.up;
+                if(Vector3.Angle(planeNormal, Vector3.down) < 45)
+                {
+                    return;
+                }
+
                 // Instantiate a plane visualization prefab and set it to track the new plane. The
                 // transform is set to the origin with an identity rotation since the mesh for our
                 // prefab is updated in Unity World coordinates.
