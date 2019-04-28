@@ -9,25 +9,30 @@ public class HealthComponent : NetworkBehaviour
 {
     public int MaxHealth = 6;
 
-    [SyncVar]
+    public delegate void HealthChanged(int health);
+    public event HealthChanged OnHealthChanged;
+
+    [SyncVar(hook = "UpdateHealth")]
     private int _currentHealth = 6;
-    private CloudAnchorsExampleController m_CloudAnchorsExampleController;
-
+    
     public int GetCurrentHealth() { return _currentHealth; }
-    public void IncrementHealth() { _currentHealth++; m_CloudAnchorsExampleController.heartsBar.current = _currentHealth; }
-
-    public void DecrementHealth() { _currentHealth = Mathf.Max(_currentHealth -1, 0); m_CloudAnchorsExampleController.heartsBar.current = _currentHealth; }
+    public void IncrementHealth() { UpdateHealth(_currentHealth + 1); }
+    public void DecrementHealth() { UpdateHealth(_currentHealth - 1); }
 
     private void Start()
     {
-        m_CloudAnchorsExampleController =
-    GameObject.Find("CloudAnchorsExampleController")
-        .GetComponent<CloudAnchorsExampleController>();
+        UpdateHealth(MaxHealth);
+    }
 
-        _currentHealth = MaxHealth;
+    private void UpdateHealth(int newHealth)
+    {
+        int prev = _currentHealth;
+        _currentHealth = Mathf.Min(MaxHealth, Mathf.Max(newHealth, 0));
 
-        m_CloudAnchorsExampleController.heartsBar.total = MaxHealth;
-        m_CloudAnchorsExampleController.heartsBar.current = _currentHealth;
+        if (prev != _currentHealth)
+        {
+            OnHealthChanged(_currentHealth);
+        }
     }
 }
 

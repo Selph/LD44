@@ -122,6 +122,7 @@ namespace GoogleARCore.Examples.CloudAnchors
 
         private float m_NextInputReadTime = 0.0f;
         private float m_InputReadFrequency = 0.5f;
+        private bool m_IsHealthBound = false;
 
         /// <summary>
         /// Enumerates modes the example application can be in.
@@ -148,6 +149,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             ARCoreRoot.SetActive(false);
             ARKitRoot.SetActive(false);
             _ResetStatus();
+
         }
 
         /// <summary>
@@ -170,6 +172,8 @@ namespace GoogleARCore.Examples.CloudAnchors
             {
                 return;
             }
+            
+            _BindHeathChanges();
 
 #if UNITY_EDITOR
             if (!Input.GetMouseButton(0))
@@ -348,13 +352,41 @@ namespace GoogleARCore.Examples.CloudAnchors
 
         private LocalPlayerController GetLocalPlayerController()
         {
-            return GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>();
+            GameObject localPlayer = GameObject.Find("LocalPlayer");
+            return localPlayer ? localPlayer.GetComponent<LocalPlayerController>() : null;
+        }
+        
+        private void _BindHeathChanges()
+        {
+            if (!m_IsHealthBound)
+            {
+                // Bind health changes
+                var localPlayerController = GetLocalPlayerController();
+                if (localPlayerController)
+                {
+                    var healthComponent = localPlayerController.GetComponent<HealthComponent>();
+                    healthComponent.OnHealthChanged += _OnHealthChanged;
+                    heartsBar.total = healthComponent.MaxHealth;
+                    heartsBar.current = healthComponent.GetCurrentHealth();
+                    m_IsHealthBound = true;
+                    Debug.Log("Health bound.");
+                }
+//                 else
+//                 {
+//                     Debug.LogError("No LocalPlayerController in CloudAnchorsExampleController::Start()");
+//                 }
+            }
         }
 
-        /// <summary>
-        /// Instantiates the anchor object at the pose of the m_LastPlacedAnchor Anchor. This will
-        /// host the Cloud Anchor.
-        /// </summary>
+        private void _OnHealthChanged(int health)
+        {
+            heartsBar.current = health;
+        }
+
+/// <summary>
+/// Instantiates the anchor object at the pose of the m_LastPlacedAnchor Anchor. This will
+/// host the Cloud Anchor.
+/// </summary>
         private void _InstantiateAnchor()
         {
             // The anchor will be spawned by the host, so no networking Command is needed.
