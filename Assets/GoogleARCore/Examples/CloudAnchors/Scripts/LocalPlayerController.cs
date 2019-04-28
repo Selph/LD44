@@ -20,6 +20,7 @@
 
 namespace GoogleARCore.Examples.CloudAnchors
 {
+    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.Networking;
 
@@ -88,8 +89,6 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // Instantiate Star model at the hit pose.
                 var starObject = Instantiate(StarPrefab, position, rotation);
                 starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
-
-                _UpdateStarMaterial(starObject);
 
                 // Spawn the object in all clients.
                 NetworkServer.Spawn(starObject);
@@ -226,19 +225,6 @@ namespace GoogleARCore.Examples.CloudAnchors
                 {
                     Debug.LogError("Cannot find GameState");
                 }
-            }
-        }
-
-        private void _UpdateStarMaterial(GameObject starObject)
-        {
-            // Update the material of locally placed stars so we donèt mix them with others
-            if (gameObject.name == "LocalPlayer")
-            {
-                var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
-                Renderer renderer = arCoreMesh.GetComponent<Renderer>();
-                Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
-                material.color = Color.blue;
-                renderer.material = material;
             }
         }
     }
