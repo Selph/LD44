@@ -16,6 +16,8 @@ public class HealthComponent : NetworkBehaviour
     public int GetCurrentHealth() { return _currentHealth; }
     public void IncrementHealth() { _currentHealth++; m_CloudAnchorsExampleController.heartsBar.current = _currentHealth; }
 
+    public void DecrementHealth() { _currentHealth = Mathf.Max(_currentHealth -1, 0); m_CloudAnchorsExampleController.heartsBar.current = _currentHealth; }
+
     private void Start()
     {
         m_CloudAnchorsExampleController =
