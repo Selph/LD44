@@ -2213,7 +2213,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Hide Your Life
+  m_Text: Hide Your Parts
 --- !u!222 &1107661369
 CanvasRenderer:
   m_ObjectHideFlags: 0

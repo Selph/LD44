@@ -376,12 +376,12 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             if (starsToPlace == 0)
             {
-                UIController.SnackbarText.text = "All bits placed. Waiting for other players to be done.";
+                UIController.SnackbarText.text = "All hearth placed. Waiting for other players to be done.";
                 Debug.Log("All local stars placed");
             }
             else
             {
-                UIController.SnackbarText.text = string.Format("Tap to place and hide your life bits, {0} left to place.", starsToPlace);
+                UIController.SnackbarText.text = string.Format("Tap to place and hide your life hearth, {0} left to place.", starsToPlace);
             }
         }
 
@@ -391,7 +391,7 @@ namespace GoogleARCore.Examples.CloudAnchors
 
             if (health == 0)
             {
-                UIController.SnackbarText.text = "You lost! All your bits were found.";
+                UIController.SnackbarText.text = "You lost! All your parts were found.";
             }
         }
 
@@ -400,7 +400,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             switch (mode)
             {
                 case GameState.GameMode.Playing:
-                    UIController.SnackbarText.text = "Find bits of other players!";
+                    UIController.SnackbarText.text = "Find hearth of other players!";
                     break;
                 case GameState.GameMode.PostGame:
                     if (heartsBar.current > 0)
