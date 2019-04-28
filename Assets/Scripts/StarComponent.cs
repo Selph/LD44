@@ -10,7 +10,7 @@ public class StarComponent : MonoBehaviour
     LocalPlayerController localPlayer;
     Interactable interactable;
     GameState gameState;
-    Renderer renderer;
+    Renderer[] renderers;
 
     bool IsLocalStar
     {
@@ -30,7 +30,7 @@ public class StarComponent : MonoBehaviour
         gameState = FindObjectOfType<GameState>();
 
         var arCoreMesh = transform.Find("ARCoreMesh").gameObject;
-        renderer = arCoreMesh.GetComponent<Renderer>();
+        renderers = transform.GetComponentsInChildren<Renderer>(true);
 
         gameState.OnGameModeChanged += RefreshState;
         RefreshState(gameState.GetGameMode());
@@ -63,7 +63,7 @@ public class StarComponent : MonoBehaviour
 
         if (localId == starOwnerId)
         {
-            _sharedMaterialsCache[starOwnerId] = renderer.sharedMaterial;
+            _sharedMaterialsCache[starOwnerId] = renderers[0].sharedMaterial;
             return;
         }
 
@@ -81,7 +81,9 @@ public class StarComponent : MonoBehaviour
         }
 
         _sharedMaterialsCache[starOwnerId] = material;
-        renderer.sharedMaterial = material;
+
+        foreach(var r in renderers)
+            r.sharedMaterial = material;
     }
 
     private void OnDestroy()
