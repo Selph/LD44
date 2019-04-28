@@ -82,11 +82,8 @@ namespace GoogleARCore.Examples.CloudAnchors
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
-            
-            // Update the material base on the player number
-            var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
-            Renderer renderer = arCoreMesh.GetComponent<Renderer>();
-            renderer.material = GetPlayerMaterial();
+
+            UpdateStarMaterial(starObject);
 
             // Spawn the object in all clients.
             NetworkServer.Spawn(starObject);
@@ -103,30 +100,39 @@ namespace GoogleARCore.Examples.CloudAnchors
                 return;
             }
 
-            // Temp comment to test pickin up our own stars
-//             var interactable = gameObject.GetComponent<Interactable>();
+            // Temp comment to test picking up our own stars
+             var interactable = gameObject.GetComponent<Interactable>();
 //             if (interactable.GetOwnerNetId() == netId)
 //             {
 //                 Debug.Log("Cannot collect your star");
 //                 return;
 //             }
 
-            var healthComponent = GetComponent<HealthComponent>();
-            healthComponent.IncrementHealth();
+            var playerController = NetworkServer.FindLocalObject(interactable.GetOwnerNetId());
+            if (playerController)
+            {
+                var healthComponent = playerController.GetComponent<HealthComponent>();
+                healthComponent.DecrementHealth();
+            }
+            else
+            {
+                Debug.LogError("No player controller found for interactable");
+            }
 
             NetworkServer.Destroy(gameObject);
         }
 
-        private Material GetPlayerMaterial()
+        private void UpdateStarMaterial(GameObject starObject)
         {
-            Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
-
+            // Update the material of locally placed stars so we donèt mix them with others
             if (gameObject.name == "LocalPlayer")
             {
+                var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
+                Renderer renderer = arCoreMesh.GetComponent<Renderer>();
+                Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
                 material.color = Color.blue;
+                renderer.material = material;
             }
-
-            return material;
         }
     }
 #pragma warning restore 618
