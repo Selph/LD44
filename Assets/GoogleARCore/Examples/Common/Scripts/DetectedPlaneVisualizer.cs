@@ -158,10 +158,10 @@ namespace GoogleARCore.Examples.Common
             }
 
             // Feather distance 0.2 meters.
-            const float featherLength = 0.2f;
+            const float featherLength = 0.1f;
 
             // Feather scale over the distance between plane center and vertices.
-            const float featherScale = 0.2f;
+            const float featherScale = 0.1f;
 
             // Add vertex 4 to 7.
             for (int i = 0; i < planePolygonCount; ++i)
