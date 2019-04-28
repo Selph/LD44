@@ -3,7 +3,6 @@ using GoogleARCore.Examples.CloudAnchors;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class StarComponent : MonoBehaviour
 {
@@ -20,7 +19,6 @@ public class StarComponent : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         localPlayer = GameObject.Find("LocalPlayer").GetComponent<LocalPlayerController>();
@@ -29,7 +27,6 @@ public class StarComponent : MonoBehaviour
 
         gameState = FindObjectOfType<GameState>();
 
-        var arCoreMesh = transform.Find("ARCoreMesh").gameObject;
         renderers = transform.GetComponentsInChildren<Renderer>(true);
 
         gameState.OnGameModeChanged += RefreshState;
