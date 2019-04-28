@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class StarComponent : MonoBehaviour
 {
+    public AudioClip clip;
+
     LocalPlayerController localPlayer;
     Interactable interactable;
     GameState gameState;
@@ -86,5 +88,10 @@ public class StarComponent : MonoBehaviour
     private void OnDestroy()
     {
         gameState.OnGameModeChanged -= RefreshState;
+
+        if(!IsLocalStar)
+        {
+            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
+        }
     }
 }
