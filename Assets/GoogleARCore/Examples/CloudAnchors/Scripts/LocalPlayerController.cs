@@ -94,6 +94,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // Spawn the object in all clients.
                 NetworkServer.Spawn(starObject);
                 StarsToPlace--;
+                Debug.LogFormat("Server: {0} stars left to place for id {1}", StarsToPlace, netId);
 
                 if (StarsToPlace == 0 && OnAllStarsPlaced != null)
                 {
@@ -189,6 +190,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 var gameState = FindObjectOfType<GameState>();
                 if (gameState)
                 {
+                    Debug.Log("All stars placed!");
                     gameState.SetGameMode(GameState.GameMode.Playing);
                 }
                 else
