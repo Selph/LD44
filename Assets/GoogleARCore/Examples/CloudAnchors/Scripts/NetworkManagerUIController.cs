@@ -61,11 +61,6 @@ namespace GoogleARCore.Examples.CloudAnchors
         public GameObject RoomListPanel;
 
         /// <summary>
-        /// Text indicating that no previous rooms exist.
-        /// </summary>
-        public Text NoPreviousRoomsText;
-
-        /// <summary>
         /// The prefab for a row in the available rooms list.
         /// </summary>
         public GameObject JoinRoomListRowPrefab;
