@@ -9,11 +9,16 @@ public class HealthComponent : NetworkBehaviour
     public int MaxHealth = 6;
 
     [SyncVar]
-    private int _currentHealth = 0;
+    private int _currentHealth = 1;
 
     public int GetCurrentHealth() { return _currentHealth; }
     public void IncrementHealth() { _currentHealth++; }
     public void DecrementHealth() { _currentHealth--; }
+
+    void Start()
+    {
+        _currentHealth = MaxHealth;
+    }
 }
 
 #pragma warning restore 618

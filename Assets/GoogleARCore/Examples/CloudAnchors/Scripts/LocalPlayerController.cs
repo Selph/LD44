@@ -100,16 +100,24 @@ namespace GoogleARCore.Examples.CloudAnchors
                 return;
             }
 
-            // Temp comment to test pickin up our own stars
-//             var interactable = gameObject.GetComponent<Interactable>();
+            // Temp comment to test picking up our own stars
+             var interactable = gameObject.GetComponent<Interactable>();
 //             if (interactable.GetOwnerNetId() == netId)
 //             {
 //                 Debug.Log("Cannot collect your star");
 //                 return;
 //             }
 
-            var healthComponent = GetComponent<HealthComponent>();
-            healthComponent.IncrementHealth();
+            var playerController = NetworkServer.FindLocalObject(interactable.GetOwnerNetId());
+            if (playerController)
+            {
+                var healthComponent = playerController.GetComponent<HealthComponent>();
+                healthComponent.DecrementHealth();
+            }
+            else
+            {
+                Debug.LogError("No player controller found for interactable");
+            }
 
             NetworkServer.Destroy(gameObject);
         }
