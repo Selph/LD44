@@ -102,9 +102,6 @@ namespace GoogleARCore.Examples.CloudAnchors
             {
                 GameObject button = Instantiate(JoinRoomListRowPrefab);
                 button.transform.SetParent(RoomListPanel.transform, false);
-                button.GetComponent<RectTransform>().anchoredPosition =
-                    new Vector2(0, -100 - (200 * i));
-                button.SetActive(true);
                 button.GetComponentInChildren<Text>().text = string.Empty;
                 m_JoinRoomButtonsPool.Add(button);
             }
@@ -258,7 +255,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                     button.GetComponentInChildren<Text>().text = string.Empty;
                 }
 
-                NoPreviousRoomsText.gameObject.SetActive(m_Manager.matches.Count == 0);
+                //NoPreviousRoomsText.gameObject.SetActive(m_Manager.matches.Count == 0);
 
                 // Add buttons for each existing match.
                 int i = 0;
@@ -271,7 +268,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                         break;
                     }
 
-                    var text = "Room " + _GetRoomNumberFromNetworkId(match.networkId);
+                    var text = "World " + _GetRoomNumberFromNetworkId(match.networkId);
                     GameObject button = m_JoinRoomButtonsPool[i++];
                     button.GetComponentInChildren<Text>().text = text;
                     button.GetComponentInChildren<Button>().onClick.AddListener(() =>
