@@ -80,7 +80,7 @@ namespace GoogleARCore.Examples.CloudAnchors
         {
             Debug.Log("Server: CmdSpawnStar");
             // Instantiate Star model at the hit pose.
-            var starObject = Instantiate(StarPrefab, position + Vector3.up * 0.1f, rotation);
+            var starObject = Instantiate(StarPrefab, position, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
             
             // Update the material base on the player number
