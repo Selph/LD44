@@ -11,6 +11,7 @@ Shader "Unlit/DepthMask"
 
 		ColorMask 0
 		ZWrite On
+		Cull Off
 
 		Pass {}
 

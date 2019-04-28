@@ -14,6 +14,7 @@
         Blend SrcAlpha OneMinusSrcAlpha
         ZTest on
         ZWrite off
+		Cull Off
 
         Pass
         {
