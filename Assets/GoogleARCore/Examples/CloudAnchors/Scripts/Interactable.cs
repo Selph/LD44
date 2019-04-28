@@ -7,8 +7,7 @@ using UnityEngine.Networking;
 public class Interactable : MonoBehaviour
 {
     public float Radius = 3.0f;
-
-    //[SyncVar]
+    
     private NetworkInstanceId _ownerNetId;
 
     public NetworkInstanceId GetOwnerNetId()

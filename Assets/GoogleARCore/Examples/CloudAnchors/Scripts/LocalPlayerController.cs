@@ -82,6 +82,11 @@ namespace GoogleARCore.Examples.CloudAnchors
             // Instantiate Star model at the hit pose.
             var starObject = Instantiate(StarPrefab, position + Vector3.up * 0.1f, rotation);
             starObject.GetComponent<Interactable>().SetOwnerNetId(netId);
+            
+            // Update the material base on the player number
+            var arCoreMesh = starObject.transform.Find("ARCoreMesh").gameObject;
+            Renderer renderer = arCoreMesh.GetComponent<Renderer>();
+            renderer.material = GetPlayerMaterial();
 
             // Spawn the object in all clients.
             NetworkServer.Spawn(starObject);
@@ -98,16 +103,30 @@ namespace GoogleARCore.Examples.CloudAnchors
                 return;
             }
 
-            var interactable = gameObject.GetComponent<Interactable>();
-            if (interactable.GetOwnerNetId() == netId)
+            // Temp comment to test pickin up our own stars
+//             var interactable = gameObject.GetComponent<Interactable>();
+//             if (interactable.GetOwnerNetId() == netId)
+//             {
+//                 Debug.Log("Cannot collect your star");
+//                 return;
+//             }
+
+            var healthComponent = GetComponent<HealthComponent>();
+            healthComponent.IncrementHealth();
+
+            NetworkServer.Destroy(gameObject);
+        }
+
+        private Material GetPlayerMaterial()
+        {
+            Material material = new Material(Shader.Find("Legacy Shaders/Diffuse"));
+
+            if (gameObject.name == "LocalPlayer")
             {
-                Debug.Log("Cannot collect your star");
-                return;
+                material.color = Color.blue;
             }
 
-            // todo: collect
-            NetworkServer.Destroy(gameObject);
-
+            return material;
         }
     }
 #pragma warning restore 618

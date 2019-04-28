@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4803923891432882}
   - component: {fileID: 114909607304245616}
   - component: {fileID: 114441619882357022}
+  - component: {fileID: 7485981107857041795}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -80,3 +81,16 @@ MonoBehaviour:
   StarPrefab: {fileID: 1517545619891756, guid: c162c528b139240d0881c95be8c04f2b, type: 3}
   AnchorPrefab: {fileID: 1930613698465500, guid: d7e51cffc46904f65957fa3aeb255467,
     type: 3}
+--- !u!114 &7485981107857041795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1158606050367660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e5785b5c4c25248b19c240a614b99c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 10
