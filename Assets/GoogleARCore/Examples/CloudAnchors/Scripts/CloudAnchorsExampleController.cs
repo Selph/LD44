@@ -365,7 +365,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 var gameState = FindObjectOfType<GameState>();
                 if (localPlayerController && gameState)
                 {
-                    localPlayerController.OnAllStarsPlaced += _OnAllStarsPlaced;
+                    localPlayerController.OnStarPlaced += _OnStarPlaced;
 
                     var healthComponent = localPlayerController.GetComponent<HealthComponent>();
                     healthComponent.OnHealthChanged += _OnHealthChanged;
@@ -379,10 +379,17 @@ namespace GoogleARCore.Examples.CloudAnchors
             }
         }
 
-        private void _OnAllStarsPlaced()
+        private void _OnStarPlaced(int starsToPlace)
         {
-            UIController.SnackbarText.text = "All bits placed. Waiting for other players to be done.";
-            Debug.Log("All local stars placed");
+            if (starsToPlace == 0)
+            {
+                UIController.SnackbarText.text = "All bits placed. Waiting for other players to be done.";
+                Debug.Log("All local stars placed");
+            }
+            else
+            {
+                UIController.SnackbarText.text = string.Format("Tap to place and hide your life bits, {0} left to place.", starsToPlace);
+            }
         }
 
         private void _OnHealthChanged(int health)

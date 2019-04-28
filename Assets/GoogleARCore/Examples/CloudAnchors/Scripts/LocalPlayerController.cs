@@ -40,9 +40,11 @@ namespace GoogleARCore.Examples.CloudAnchors
         /// </summary>
         public GameObject AnchorPrefab;
 
+        [SyncVar(hook = "_OnStarPlaced")]
         public int StarsToPlace = 6;
-        public delegate void AllStarsPlaced();
-        public event AllStarsPlaced OnAllStarsPlaced;
+
+        public delegate void StarPlaced(int starsToPlace);
+        public event StarPlaced OnStarPlaced;
 
         /// <summary>
         /// The Unity OnStartLocalPlayer() method.
@@ -95,9 +97,9 @@ namespace GoogleARCore.Examples.CloudAnchors
                 StarsToPlace--;
                 Debug.LogFormat("Server: {0} stars left to place for id {1}", StarsToPlace, netId);
 
-                if (StarsToPlace == 0 && OnAllStarsPlaced != null)
+                if (OnStarPlaced != null)
                 {
-                    OnAllStarsPlaced();
+                    OnStarPlaced(StarsToPlace);
                 }
 
                 _CheckIfAllStarsPlaced();
@@ -145,6 +147,16 @@ namespace GoogleARCore.Examples.CloudAnchors
             else
             {
                 Debug.Log("Cannot collect stars while not in playing mode");
+            }
+        }
+
+        private void _OnStarPlaced(int starsLeftToPlace)
+        {
+            StarsToPlace = starsLeftToPlace;
+
+            if (OnStarPlaced != null)
+            {
+                OnStarPlaced(StarsToPlace);
             }
         }
 
