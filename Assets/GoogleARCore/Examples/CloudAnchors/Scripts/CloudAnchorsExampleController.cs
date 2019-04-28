@@ -120,8 +120,6 @@ namespace GoogleARCore.Examples.CloudAnchors
 
         private bool m_MatchStarted = false;
 
-        private float m_NextInputReadTime = 0.0f;
-        private float m_InputReadFrequency = 0.5f;
         private bool m_AreEventsBound = false;
 
         /// <summary>
@@ -176,7 +174,7 @@ namespace GoogleARCore.Examples.CloudAnchors
             _BindEvents();
 
 #if UNITY_EDITOR
-            if (!Input.GetMouseButton(0))
+            if (!Input.GetMouseButtonDown(0))
                 return;
 
             var position = Input.mousePosition;
@@ -213,6 +211,11 @@ namespace GoogleARCore.Examples.CloudAnchors
                 }
             }
 
+            if(_CanCollectStars() && _TrySelectStart())
+            {
+                return;
+            }
+
             // If there was an anchor placed, then instantiate the corresponding object.
             if (m_LastHitPose != null)
             {
@@ -220,17 +223,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 // subsequent touch will instantiate a star, both in Hosting and Resolving modes.
                 if (_CanPlaceStars(m_LastHitPose.Value))
                 {
-                    Debug.Log("Time: " + Time.time + ", next: " + m_NextInputReadTime);
-                    if (m_NextInputReadTime > Time.time)
-                    {
-                        return;
-                    }
-                    m_NextInputReadTime = Time.time + m_InputReadFrequency;
-
-                    if (!_TrySelectStart())
-                    {
-                        _InstantiateStar();
-                    }
+                    _InstantiateStar();
                 }
                 else if (!m_IsOriginPlaced && m_CurrentMode == ApplicationMode.Hosting)
                 {
@@ -447,7 +440,13 @@ namespace GoogleARCore.Examples.CloudAnchors
 
             if (m_LastHitPose == null)
             {
-                Debug.LogError("No last hit pose");
+                StarComponent star;
+                if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out var hitInfo, camera.farClipPlane) && (star = hitInfo.collider.GetComponent<StarComponent>()))
+                {
+                    GetLocalPlayerController().CmdCollectStar(hitInfo.collider.GetComponent<Interactable>().netId);
+                    return true;
+                }
+
                 return false;
             }
 
@@ -529,6 +528,21 @@ namespace GoogleARCore.Examples.CloudAnchors
                 return false;
             }
 
+            if (m_CurrentMode == ApplicationMode.Resolving)
+            {
+                return m_IsOriginPlaced;
+            }
+
+            if (m_CurrentMode == ApplicationMode.Hosting)
+            {
+                return m_IsOriginPlaced && m_AnchorFinishedHosting;
+            }
+
+            return false;
+        }
+
+        private bool _CanCollectStars()
+        {
             if (m_CurrentMode == ApplicationMode.Resolving)
             {
                 return m_IsOriginPlaced;
