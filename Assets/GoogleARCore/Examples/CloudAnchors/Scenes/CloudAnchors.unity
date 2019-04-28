@@ -731,7 +731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea0532ba163745069c0894560a451b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistanceFromAnchor: 5
+  maxDistanceFromAnchor: 6
   limitPrefab: {fileID: 9111434223133017465, guid: affc4d13fd213a24cb9cf704ebf82265,
     type: 3}
   heartsBar: {fileID: 970011184}
