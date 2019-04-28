@@ -95,7 +95,7 @@ namespace GoogleARCore.Examples.CloudAnchors
                 NetworkServer.Spawn(starObject);
                 StarsToPlace--;
 
-                if (StarsToPlace == 0)
+                if (StarsToPlace == 0 && OnAllStarsPlaced != null)
                 {
                     OnAllStarsPlaced();
                 }
